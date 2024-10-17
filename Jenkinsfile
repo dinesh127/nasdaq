@@ -24,8 +24,8 @@ pipeline {
         stage('Plan') {
             steps {
                 bat 'terraform init'
-                 bat 'terraform plan'
-                 bat 'terraform show'
+                bat 'terraform plan'
+                bat 'terraform show'
                  }
         }
         stage('Approval') {
