@@ -23,9 +23,9 @@ pipeline {
             }
         stage('Plan') {
             steps {
-                bat 'pwd;cd "c:\terraform\"; terraform init'
-                 bat 'pwd;cd "c:\terraform\"; terraform plan'
-                 bat 'pwd;cd "c:\terraform\"; terraform show'
+                bat 'cd "c:\terraform\"; terraform init'
+                 bat 'cd "c:\terraform\"; terraform plan'
+                 bat 'cd "c:\terraform\"; terraform show'
                  }
         }
         stage('Approval') {
