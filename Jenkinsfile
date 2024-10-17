@@ -24,7 +24,7 @@ pipeline {
 
         stage('Plan') {
             steps {
-                bat 'terraform -chdir=c:\terraform init"
+                bat 'terraform -chdir=c:\terraform init'
             }
         }
         stage('Approval') {
