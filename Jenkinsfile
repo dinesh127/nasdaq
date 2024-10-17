@@ -23,7 +23,7 @@ pipeline {
             }
         stage('Plan') {
             steps {
-                bat "c:\terraform" 'terraform init'
+                bat 'C:\\terraform\\terraform init'
                 bat "c:\terraform" 'terraform plan'
                 bat "c:\terraform" 'terraform show'
                  }
