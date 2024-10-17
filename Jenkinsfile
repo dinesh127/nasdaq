@@ -23,7 +23,7 @@ pipeline {
             }
  stage('Plan') {
             steps {
-               bat 'cd "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\terraform" terraform init '
+               bat cd terraform 'terraform init '
             }
         }
 
