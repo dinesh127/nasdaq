@@ -23,11 +23,8 @@ pipeline {
             }
         stage('Plan') {
             steps {
-               Set-Location -Path 'C:\terraform'
-               terraform init           
-               terraform plan
-               terraform show
-            }
+                bat 'pwd;cd "c:\terraform\"; terraform init'
+                 }
         }
         stage('Approval') {
            when {
