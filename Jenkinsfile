@@ -15,7 +15,7 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                             checkout scmGit(branches: [[name: 'main']], 
+                             checkout scmGit(branches: [[name: 'nasdaq']], 
                                 userRemoteConfigs: [[url: 'https://github.com/dinesh127/nasdaq']])
                         }
                     }
