@@ -23,7 +23,7 @@ pipeline {
             }
  stage('Plan') {
             steps {
-               bat "dir ls"
+               bat 'dir'
             }
         }
 
