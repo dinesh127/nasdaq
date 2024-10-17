@@ -23,7 +23,7 @@ pipeline {
             }
  stage('Plan') {
             steps {
-               bat 'cd "C:\Program Files\Adobe"'
+               bat 'cd "C:\\Program Files\\Adobe"'
             }
         }
 
