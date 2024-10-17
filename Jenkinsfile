@@ -23,9 +23,10 @@ pipeline {
             }
         stage('Plan') {
             steps {
-                sh 'pwd;cd terraform/ ; terraform init'
-                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
-                sh 'pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt'
+               Set-Location -Path 'C:\terraform'
+               terraform init           
+               terraform plan
+               terraform show
             }
         }
         stage('Approval') {
