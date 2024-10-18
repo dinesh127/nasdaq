@@ -27,6 +27,14 @@ pipeline {
                     Set-Location -Path "C:\\path\\to\\your\\terraform\\directory"
                     terraform init
                 '''
+                powershell '''
+                    Set-Location -Path "C:\\path\\to\\your\\terraform\\directory"
+                    terraform plan -out=tfplan
+                '''
+                powershell '''
+                    Set-Location -Path "C:\\path\\to\\your\\terraform\\directory"
+                    terraform show -no-color tfplan > tfplan.txt
+                '''
                   }
         }
 
