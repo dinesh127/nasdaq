@@ -27,8 +27,8 @@ pipeline {
             steps {
                 dir('C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\terraform') {
                bat 'terraform init'
-               bat ' terraform plan -out tfplan"
-               bat ' terraform show -no-color tfplan > tfplan.txt'
+               bat 'terraform plan'
+               bat 'terraform show'
                     }
             }
         }
