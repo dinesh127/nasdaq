@@ -23,8 +23,10 @@ pipeline {
             }
  stage('Plan') {
             steps {
-               bat 'cd terraform terraform init'
-            }
+                powershell 'terraform init'
+                powershell 'terraform plan'
+                powershell 'terraform show'
+                  }
         }
 
         stage('Approval') {
