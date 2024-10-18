@@ -24,7 +24,7 @@ pipeline {
  stage('Plan') {
             steps {
                 powershell 'terraform init'
-                powershell 'terraform plan'
+                powershell 'terraform plan -out=tfplan'
                 powershell 'terraform show'
                   }
         }
