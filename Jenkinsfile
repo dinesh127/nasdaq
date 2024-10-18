@@ -25,9 +25,11 @@ pipeline {
 
         stage('Plan') {
             steps {
-                sh 'pwd;cd terraform/ ; terraform init'
-                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
-                sh 'pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt'
+                dir('C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\terraform') {
+               bat 'terraform init'
+               bat ' terraform plan -out tfplan"
+               bat ' terraform show -no-color tfplan > tfplan.txt'
+                    }
             }
         }
         stage('Approval') {
