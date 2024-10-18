@@ -23,9 +23,9 @@ pipeline {
             }
  stage('Plan') {
             steps {
-                powershell 'terraform init'
-                powershell 'terraform plan -out=tfplan'
-                powershell 'terraform show'
+                powershell '''Set-Location -Path "C:\\terraform" terraform init'''
+                powershell '''Set-Location -Path "C:\\terraform" terraform plan -out=tfplan'''
+                powershell '''Set-Location -Path "C:\\terraform" terraform show'''
                   }
         }
 
