@@ -21,16 +21,10 @@ pipeline {
                     }
                 }
             }
-         stage('setlocation') {
-            steps {
-                powershell 'Set-Location -Path "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\terraform"'
-                  }
-        }
  stage('Plan') {
             steps {
-                powershell 'terraform.exe terraform init'
-                powershell 'terraform plan -out=tfplan'
-                powershell 'terraform show'
+               powershell '''Set-Location -Path "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\terraform"
+terraform init'''
                   }
         }
 
