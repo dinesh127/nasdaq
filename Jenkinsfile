@@ -15,9 +15,8 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                           checkout scmGit(branches: [[name: 'nasdaq']], 
-                           userRemoteConfigs: [[url: 'https://github.com/dinesh127/nasdaq']])
-
+                             checkout scmGit(branches: [[name: 'main']], 
+                                userRemoteConfigs: [[url: 'https://github.com/dinesh127/nasdaq']])
                         }
                     }
                 }
@@ -25,11 +24,9 @@ pipeline {
 
         stage('Plan') {
             steps {
-                dir('C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\terraform') {
-               bat 'terraform init'
-               bat 'terraform plan'
-               bat 'terraform show'
-                    }
+                sh 'pwd;cd terraform/ ; terraform init'
+                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
+                sh 'pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt'
             }
         }
         stage('Approval') {
