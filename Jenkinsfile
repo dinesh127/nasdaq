@@ -1,54 +1,59 @@
 pipeline {
+    agent any
 
     parameters {
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
-    } 
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Choose whether to apply or destroy the Terraform configuration')
+    }
+
     environment {
-        aws_access_key = credentials('aws_access_key')
-        aws_secret_key = credentials('aws_secret_key')
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
     }
 
-   agent  any
     stages {
-        stage('checkout') {
+        stage('Checkout') {
             steps {
-                 script{
-                        dir("terraform")
-                        {
-                             checkout scmGit(branches: [[name: 'Assignment']], 
-                                userRemoteConfigs: [[url: 'https://github.com/dinesh127/nasdaq']])
-                        }
-                    }
-                }
-            }
-stage('Plan') {
-            steps {
-                sh "pwd;cd terraform/ ; terraform init"
-                sh "pwd;cd terraform/ ; terraform plan -var '"aws_access_key=$aws_access_key"' -var '"aws_secret_key=$aws_secret_key"' -out=tfplan"
-                sh "pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt"
+                checkout scm
             }
         }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-           }
 
-           steps {
-               script {
-                    def plan = readFile 'terraform/tfplan.txt'
-                    input message: "Do you want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
-
-        stage('Apply') {
+        stage('Terraform Init') {
             steps {
-                sh "pwd;cd terraform/ ; terraform apply -input=false tfplan"
+                sh 'terraform init'
+            }
+        }
+
+        stage('Terraform Plan') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh 'terraform plan -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY" -out=tfplan'
+            }
+        }
+
+        stage('Terraform Apply') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh 'terraform apply -input=false tfplan'
+            }
+        }
+
+        stage('Terraform Destroy') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                sh 'terraform destroy -auto-approve -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY"'
             }
         }
     }
 
-  }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
