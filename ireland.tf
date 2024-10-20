@@ -113,3 +113,27 @@ resource "aws_dynamodb_table" "ireland_dynamo" {
     type = "S"
   }
 }
+
+resource "aws_vpc_peering_connection" "ireland_to_singapore" {
+  provider           = aws.ireland
+  vpc_id             = aws_vpc.ireland_vpc.id
+  peer_vpc_id        = aws_vpc.singapore_vpc.id
+  peer_region        = "ap-southeast-1"
+
+  tags = {
+    Name = "Ireland to Singapore Peering"
+  }
+}
+
+resource "aws_route" "route_to_singapore" {
+  provider              = aws.ireland
+  route_table_id        = aws_route_table.ireland_route_table.id
+  destination_cidr_block = aws_vpc.singapore_vpc.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.ireland_to_singapore.id
+}
+
+
+resource "aws_route_table" "ireland_route_table" {
+  provider = aws.ireland
+  vpc_id   = aws_vpc.ireland_vpc.id
+}

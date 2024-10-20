@@ -108,3 +108,25 @@ resource "aws_dynamodb_table_replica" "singapore_dynamo_replica" {
   global_table_arn      = aws_dynamodb_table.ireland_dynamo.arn
   depends_on            = [aws_dynamodb_table.ireland_dynamo]
 }
+
+resource "aws_vpc_peering_connection_accepter" "accept_ireland_to_singapore" {
+  provider                = aws.singapore
+  vpc_peering_connection_id = aws_vpc_peering_connection.ireland_to_singapore.id
+  auto_accept             = true
+
+  tags = {
+    Name = "Accept Ireland to Singapore Peering"
+  }
+}
+
+resource "aws_route_table" "singapore_route_table" {
+  provider = aws.singapore
+  vpc_id   = aws_vpc.singapore_vpc.id
+}
+
+resource "aws_route" "route_to_ireland" {
+  provider                = aws.singapore
+  route_table_id          = aws_route_table.singapore_route_table.id
+  destination_cidr_block  = aws_vpc.ireland_vpc.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.ireland_to_singapore.id
+}
