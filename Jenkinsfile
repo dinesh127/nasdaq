@@ -19,7 +19,10 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                script {
+                    echo 'Running terraform init'
+                    sh 'terraform init'
+                }
             }
         }
 
@@ -28,7 +31,10 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                sh 'terraform plan -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY" -out=tfplan'
+                script {
+                    echo 'Running terraform plan'
+                    sh 'terraform plan -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY" -out=tfplan'
+                }
             }
         }
 
@@ -37,7 +43,10 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                sh 'terraform apply -input=false tfplan'
+                script {
+                    echo 'Running terraform apply'
+                    sh 'terraform apply -input=false tfplan'
+                }
             }
         }
 
@@ -46,16 +55,19 @@ pipeline {
                 expression { params.ACTION == 'destroy' }
             }
             steps {
-                sh 'terraform destroy -auto-approve -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY"'
+                script {
+                    echo 'Running terraform destroy'
+                    sh 'terraform destroy -auto-approve -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY"'
+                }
             }
         }
     }
 
-   post {
-    always {
-        node('master') {
-            cleanWs()
+    post {
+        always {
+            node('master') {
+                cleanWs()
+            }
         }
     }
-}
 }
