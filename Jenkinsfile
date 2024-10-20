@@ -4,9 +4,8 @@ pipeline {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
     } 
     environment {
-        AWS_DEFAULT_REGION = 'eu-west-1'
-        aws_access_key     = credentials('AWS_ACCESS_KEY_ID')
-        aws_secret_key = credentials('AWS_SECRET_ACCESS_KEY')
+        aws_access_key = credentials('ws_access_key')
+        aws_secret_key = credentials('aws_secret_key')
     }
 
    agent  any
@@ -25,7 +24,7 @@ pipeline {
 stage('Plan') {
             steps {
                 sh "pwd;cd terraform/ ; terraform init"
-                sh "pwd;cd terraform/ ; terraform plan -sh 'terraform plan -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY" -out=tfplan'"
+                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
                 sh "pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt"
             }
         }
