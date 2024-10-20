@@ -4,8 +4,8 @@ pipeline {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
     } 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        aws_access_key     = credentials('AWS_ACCESS_KEY_ID')
+        aws_secret_key = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
    agent  any
@@ -15,7 +15,7 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                             checkout scmGit(branches: [[name: 'nasdaq']], 
+                             checkout scmGit(branches: [[name: 'assignment']], 
                                 userRemoteConfigs: [[url: 'https://github.com/dinesh127/nasdaq']])
                         }
                     }
