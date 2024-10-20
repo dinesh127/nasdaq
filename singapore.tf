@@ -102,3 +102,9 @@ resource "aws_autoscaling_group" "singapore_asg" {
   desired_capacity      = 1
   depends_on            = [aws_lb.singapore_lb]
 }
+
+resource "aws_dynamodb_table_replica" "singapore_dynamo_replica" {
+  provider              = aws.singapore
+  global_table_arn      = aws_dynamodb_table.ireland_dynamo.arn
+  depends_on            = [aws_dynamodb_table.ireland_dynamo]
+}

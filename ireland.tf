@@ -102,3 +102,14 @@ resource "aws_autoscaling_group" "ireland_asg" {
   desired_capacity      = 1
   depends_on            = [aws_lb.ireland_lb]
 }
+
+resource "aws_dynamodb_table" "ireland_dynamo" {
+  provider          = aws.ireland
+  name              = "GlobalTable"
+  billing_mode      = "PAY_PER_REQUEST"
+  hash_key          = "id"
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
