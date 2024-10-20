@@ -5,8 +5,8 @@ pipeline {
     } 
     environment {
         AWS_DEFAULT_REGION = 'eu-west-1'
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_ACCESS_KEY_ID = credentials('AWS_SECRET_ACCESS_KEY')
+        aws_access_key     = credentials('AWS_ACCESS_KEY_ID')
+        aws_secret_key = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
    agent  any
