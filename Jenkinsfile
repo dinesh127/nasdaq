@@ -51,11 +51,11 @@ pipeline {
         }
     }
 
-    post {
+   post {
     always {
-        node {
+        node('master') {
             cleanWs()
         }
     }
-    }
+}
 }
