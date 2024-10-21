@@ -16,7 +16,7 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                             checkout scmGit(branches: [[name: 'assignment']], 
+                             checkout scmGit(branches: [[name: 'Assignment']], 
                                 userRemoteConfigs: [[url: 'https://github.com/dinesh127/nasdaq']])
                         }
                     }
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     echo "Running terraform plan"
-                    sh "terraform plan -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY" -out=tfplan"
+                    sh "terraform plan -out=tfplan"
                 }
             }
         }
