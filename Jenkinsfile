@@ -11,11 +11,17 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('checkout') {
             steps {
-                checkout scm
+                 script{
+                        dir("terraform")
+                        {
+                             checkout scmGit(branches: [[name: 'assignment']], 
+                                userRemoteConfigs: [[url: 'https://github.com/dinesh127/nasdaq']])
+                        }
+                    }
+                }
             }
-        }
 
         stage('Terraform Init') {
             steps {

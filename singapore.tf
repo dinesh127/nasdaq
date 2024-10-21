@@ -26,6 +26,19 @@ resource "aws_subnet" "singapore_public_subnet2" {
   availability_zone       = "ap-southeast-1b"
 }
 
+resource "aws_internet_gateway" "singapore_igw" {
+  provider = aws.singapore
+  vpc_id   = aws_vpc.singapore_vpc.id
+}
+
+resource "aws_route" "singapore_route" {
+  provider             = aws.singapore
+  route_table_id       = aws_route_table.singapore_route_table.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id           = aws_internet_gateway.singapore_igw.id
+}
+
+
 resource "aws_security_group" "singapore_lb_sg" {
   provider = aws.singapore
   vpc_id   = aws_vpc.singapore_vpc.id
@@ -48,7 +61,7 @@ resource "aws_security_group" "singapore_lb_sg" {
 resource "aws_lb" "singapore_lb" {
   provider            = aws.singapore
   name                = "singapore-lb"
-  internal            = true
+  internal            = false
   load_balancer_type  = "application"
   security_groups     = [aws_security_group.singapore_lb_sg.id]
   subnets             = [
@@ -81,6 +94,28 @@ resource "aws_launch_template" "singapore_lt" {
   name                    = "singapore-lt"
   image_id                = var.singapore_ami
   instance_type           = var.instance_type
+user_data     = base64encode(<<-EOF
+<powershell>
+# Step 1: Install Python
+Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe" -OutFile "C:\\python-3.9.7-amd64.exe"
+Start-Process -FilePath "C:\\python-3.9.7-amd64.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
+
+# Step 2: Set Python Environment Variable
+[System.Environment]::SetEnvironmentVariable("Path", $Env:Path + ";C:\\Python39", "Machine")
+
+# Step 3: Download the Combined Script
+Invoke-WebRequest -Uri "https://github.com/dinesh127/nasdaq/blob/Assignment/install_iis.py" -OutFile "C:\\install_iis.py"
+
+# Step 4: Run the Combined Script
+python "C:\\install_iis.py"
+
+# Step 5: Upload Logs to S3
+$bucketName = "dini-dev-tf-state-bucket"
+$keyName = "logs/cloud-init-output.log"
+aws s3 cp C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Log\\ cloud-init-output.log s3://$bucketName/$keyName
+</powershell>
+EOF
+)
   lifecycle {
     create_before_destroy = true
   }
