@@ -29,11 +29,11 @@ variable "instance_type" {
 variable "ireland_ami" {
   description = "AMI ID"
   type        = string
-  default     = "ami-0d825a124481985ae"  # Replace with an actual AMI ID
+  default     = "ami-012fdac573cd1044e"  # Replace with an actual AMI ID
 }
 
 variable "singapore_ami" {
   description = "AMI ID"
   type        = string
-  default     = "ami-0c86ea25dca843f1c"  # Replace with an actual AMI ID
+  default     = "ami-072ff22bbcc45a9a3"  # Replace with an actual AMI ID
 }
