@@ -24,7 +24,7 @@ pipeline {
 stage('Plan') {
             steps {
                 sh "pwd;cd terraform/ ; terraform init"
-                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
+                sh "pwd;cd terraform/ ; terraform plan -var "aws_access_key=$AWS_ACCESS_KEY_ID" -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY" -out tfplan"
                 sh "pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt"
             }
         }
