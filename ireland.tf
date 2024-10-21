@@ -96,22 +96,55 @@ resource "aws_launch_template" "ireland_lt" {
   user_data     = base64encode(<<-EOF
 <powershell>
 # Step 1: Install Python
-Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe" -OutFile "C:\\python-3.9.7-amd64.exe"
-Start-Process -FilePath "C:\\python-3.9.7-amd64.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
+    Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe" -OutFile "C:\\python-3.9.7-amd64.exe"
+    Start-Process -FilePath "C:\\python-3.9.7-amd64.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
 
-# Step 2: Set Python Environment Variable
-[System.Environment]::SetEnvironmentVariable("Path", $Env:Path + ";C:\\Python39", "Machine")
+    # Step 2: Set Python Environment Variable
+    [System.Environment]::SetEnvironmentVariable("Path", $Env:Path + ";C:\\Python39", "Machine")
 
-# Step 3: Download the Combined Script
-Invoke-WebRequest -Uri "https://github.com/dinesh127/nasdaq/blob/Assignment/install_iis.py" -OutFile "C:\\install_iis.py"
+    # Step 3: Download the Combined Script
+    Invoke-WebRequest -Uri "https://github.com/dinesh127/nasdaq/blob/Assignment/install_iis.py" -OutFile "C:\\install_iis.py"
 
-# Step 4: Run the Combined Script
-python "C:\\install_iis.py"
+    # Step 4: Run the Combined Script
+    python "C:\\install_iis.py"
 
-# Step 5: Upload Logs to S3
-$bucketName = "dini-dev-tf-state-bucket"
-$keyName = "logs/cloud-init-output.log"
-aws s3 cp C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Log\\ cloud-init-output.log s3://$bucketName/$keyName
+    # Step 5: Upload Logs to S3 using Python
+    $pythonScript = @"
+import boto3
+import os
+
+# Fetch AWS credentials from environment variables
+AWS_ACCESS_KEY_ID = "${aws_access_key}"
+AWS_SECRET_ACCESS_KEY = "${aws_secret_key}"
+AWS_REGION = 'your_aws_region'
+
+# Configure S3 client
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_REGION
+)
+
+# Define the log file path and S3 bucket details
+log_file_path = 'C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Log\\cloud-init-output.log'
+bucket_name = 'dini-dev-tf-state-bucket'
+key_name = 'logs/cloud-init-output.log'
+
+# Upload the log file to S3
+try:
+    s3_client.upload_file(log_file_path, bucket_name, key_name)
+    print('File uploaded successfully.')
+except Exception as e:
+    print(f'Failed to upload file: {e}')
+"@
+
+# Write the Python script to a file
+$pythonScriptPath = "C:\\upload_to_s3.py"
+[System.IO.File]::WriteAllText($pythonScriptPath, $pythonScript)
+
+# Run the Python script
+python $pythonScriptPath
 </powershell>
 EOF
 )
