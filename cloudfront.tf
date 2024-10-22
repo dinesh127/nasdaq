@@ -38,5 +38,6 @@ resource "aws_cloudfront_distribution" "app_distribution" {
 
   viewer_certificate {
     cloudfront_default_certificate = false
+    ssl_support_method             = "sni-only"  # Required field to avoid errors
   }
 }
