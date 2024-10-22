@@ -4,6 +4,7 @@ resource "aws_cloudfront_distribution" "app_distribution" {
     origin_id   = "app-alb"
     custom_origin_config {
       http_port              = 80
+      https_port             = 443  # Required even if not used
       origin_protocol_policy = "http-only"  # Set to HTTP only
       origin_ssl_protocols   = ["TLSv1.2"]  # Still required, let's keep it
     }
@@ -41,9 +42,8 @@ resource "aws_cloudfront_distribution" "app_distribution" {
       restriction_type = "none"
     }
   }
-  
-    viewer_certificate {
+
+  viewer_certificate {
     cloudfront_default_certificate = false
   }
 }
-
