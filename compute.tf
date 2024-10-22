@@ -48,23 +48,6 @@ resource "aws_launch_template" "app_lt" {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.ec2_sg.id]
   }
-user_data = base64encode(<<EOF
-#!/bin/bash
-# Install htop
-sudo apt-get install -y htop
-
-# Create SSL Certificate using bncert-tool
-sudo /opt/bitnami/bncert-tool <<EOF2
-www.dininasdaq.com
-yes
-yes
-yes
-rdinesh.127@gmail.com
-yes
-EOF2
-
-EOF
-)
   lifecycle {
     create_before_destroy = true
   }

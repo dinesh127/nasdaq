@@ -4,9 +4,7 @@ resource "aws_cloudfront_distribution" "app_distribution" {
     origin_id   = "app-alb"
     custom_origin_config {
       http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "match-viewer"
-      origin_ssl_protocols   = ["TLSv1.2"]
+      origin_protocol_policy = "http-only"  # Set to HTTP only
     }
   }
 
@@ -16,9 +14,12 @@ resource "aws_cloudfront_distribution" "app_distribution" {
 
   default_cache_behavior {
     target_origin_id       = "app-alb"
-    viewer_protocol_policy = "redirect-to-https"
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    viewer_protocol_policy = "allow-all"  # Set to HTTP and HTTPS
+    allowed_methods        = ["GET", "HEAD"]  # Adjusted allowed methods
     cached_methods         = ["GET", "HEAD"]
+
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"  # Amazon's caching-optimized cache policy ID
+    origin_request_policy_id = "6885a789-2217-4ade-b2e8-97286b08e9ef"  # Amazon's origin request policy ID (optional)
 
     forwarded_values {
       query_string = false
@@ -38,9 +39,5 @@ resource "aws_cloudfront_distribution" "app_distribution" {
     geo_restriction {
       restriction_type = "none"
     }
-  }
-
-  viewer_certificate {
-    cloudfront_default_certificate = true
   }
 }
