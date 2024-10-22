@@ -23,13 +23,6 @@ resource "aws_cloudfront_distribution" "app_distribution" {
     cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"  # Amazon's caching-optimized cache policy ID
     origin_request_policy_id = "6885a789-2217-4ade-b2e8-97286b08e9ef"  # Amazon's origin request policy ID (optional)
 
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
-
     min_ttl     = 0
     default_ttl = 3600
     max_ttl     = 86400
