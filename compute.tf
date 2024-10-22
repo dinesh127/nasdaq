@@ -48,6 +48,26 @@ resource "aws_launch_template" "app_lt" {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.ec2_sg.id]
   }
+user_data = base64encode(<<EOF
+#!/bin/bash
+# Install Python and pip
+sudo apt-get update -y
+sudo apt-get install -y python3 python3-pip
+
+# Install AWS CLI
+sudo apt-get install -y awscli
+
+# Install necessary Python packages
+sudo pip3 install boto3 botocore
+
+# Download the Python script from S3
+aws s3 cp s3://your-s3-bucket-name/log-update.py /opt/log-update.py
+
+# Run the Python script
+python3 /opt/log-update.py
+
+EOF
+)
   lifecycle {
     create_before_destroy = true
   }
