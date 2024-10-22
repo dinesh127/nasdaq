@@ -20,8 +20,7 @@ resource "aws_cloudfront_distribution" "app_distribution" {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
 
-    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-    origin_request_policy_id = "6885a789-2217-4ade-b2e8-97286b08e9ef"
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"  # Amazon's caching-optimized cache policy ID
 
     min_ttl     = 0
     default_ttl = 3600
