@@ -40,4 +40,9 @@ resource "aws_cloudfront_distribution" "app_distribution" {
       restriction_type = "none"
     }
   }
+  
+    viewer_certificate {
+    cloudfront_default_certificate = true
+  }
 }
+
